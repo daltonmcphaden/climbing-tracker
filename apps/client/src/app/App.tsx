@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react"
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity, Linking } from "react-native"
 import Svg, { G, Path } from "react-native-svg"
+import Page from "./test"
 
 export const App = () => {
   const [whatsNextYCoord, setWhatsNextYCoord] = useState<number>(0)
@@ -19,6 +20,7 @@ export const App = () => {
           style={styles.scrollView}
         >
           <View style={styles.section}>
+            <Page />
             <Text style={styles.textLg}>Hello there,</Text>
             <Text style={[styles.textXL, styles.appTitleText]} testID="heading">
               Hello Dalton 👋

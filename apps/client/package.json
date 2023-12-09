@@ -13,10 +13,11 @@
     "@nx/expo": "*",
     "@expo/metro-config": "*",
     "react-native-svg-transformer": "*",
-    "react": "*"
+    "react": "*",
+    "expo-router": "*"
   },
   "scripts": {
-    "eas-build-pre-install": "cd ../ && node tools/scripts/eas-build-pre-install.mjs . client && cp package-lock.json client",
-    "eas-build-post-install": "cd ../ && node tools/scripts/eas-build-post-install.mjs . client"
+    "eas-build-pre-install": "cd ../../ && node tools/scripts/eas-build-pre-install.mjs . client && cp package-lock.json client",
+    "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . client"
   }
 }
