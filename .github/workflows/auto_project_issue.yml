@@ -8,9 +8,14 @@ jobs:
   add-to-project:
     runs-on: ubuntu-latest
     steps:
+      - name: Check GitHub context
+        run: echo "$GITHUB_CONTEXT"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
       - name: Automatically assign issue to project
         uses: alex-page/github-project-automation-plus@v0.8.1
         with:
           project: climbing-tracker
           column: Todo
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GHPROJECT_TOKEN }}
