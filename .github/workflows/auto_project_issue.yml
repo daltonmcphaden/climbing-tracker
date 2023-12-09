@@ -13,5 +13,4 @@ jobs:
         with:
           project: climbing-tracker
           column: Todo
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
