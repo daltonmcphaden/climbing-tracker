@@ -1,16 +1,16 @@
-import React from "react"
-import { View, Text } from "react-native"
-import { Link } from "expo-router"
+import * as React from "react"
+import { AppRegistry } from "react-native"
+import { expo } from "./../../app.json"
+import App from "./App"
+import { PaperProvider } from "react-native-paper"
+import { theme } from "../hooks/theme"
 
-export const App = () => {
+export default function Main() {
   return (
-    <>
-      <View>
-        <Text>Hello world</Text>
-        <Link href="/about">About</Link>
-      </View>
-    </>
+    <PaperProvider theme={theme}>
+      <App />
+    </PaperProvider>
   )
 }
 
-export default App
+AppRegistry.registerComponent(expo.name, () => Main)
