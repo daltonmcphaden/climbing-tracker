@@ -6,7 +6,7 @@ export const App = () => {
   return (
     <>
       <View>
-        <Text>This is the App page</Text>
+        <Text>Hello world</Text>
         <Link href="/about">About</Link>
       </View>
     </>
