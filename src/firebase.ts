@@ -1,15 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  User,
-  browserSessionPersistence,
-  setPersistence,
-  signInWithEmailAndPassword,
-} from "firebase/auth"
+import { getFirestore } from "firebase/firestore"
+import { getAuth, GoogleAuthProvider, User, signInWithRedirect, getRedirectResult } from "firebase/auth"
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,34 +22,25 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)
 const analytics = getAnalytics(app)
+export const db = getFirestore(app)
 
 const provider = new GoogleAuthProvider()
 
 export const auth = getAuth()
 
-// setPersistence(auth, browserSessionPersistence)
-//   .then(() => {
-//     // Existing and future Auth states are now persisted in the current
-//     // session only. Closing the window would clear any existing state even
-//     // if a user forgets to sign out.
-//     // ...
-//     // New sign-in will be persisted with session persistence.
-//     return signInWithPopup(auth, provider)
-//   })
-//   .catch(error => {
-//     // Handle Errors here.
-//     const errorCode = error.code
-//     const errorMessage = error.message
-//   })
-
 export const login = (): Promise<{ token: string; user: User }> => {
   return new Promise((resolve, reject) => {
-    signInWithPopup(auth, provider)
+    signInWithRedirect(auth, provider)
+      .then(() => {
+        return getRedirectResult(auth)
+      })
       .then(result => {
-        const credential = GoogleAuthProvider.credentialFromResult(result)!
-        const token = credential.accessToken!
-        const user = result.user
-        resolve({ token, user })
+        if (result) {
+          const credential = GoogleAuthProvider.credentialFromResult(result)!
+          const token = credential.accessToken!
+          const user = result.user
+          resolve({ token, user })
+        }
       })
       .catch(error => {
         const errorCode = error.code

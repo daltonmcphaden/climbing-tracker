@@ -16,7 +16,7 @@ declare module "@mui/material/styles" {
 
 export const themeOptions: ThemeOptions = {
   palette: {
-    mode: "dark",
+    mode: "light",
     primary: {
       main: "#e47723",
     },

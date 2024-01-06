@@ -1,14 +1,12 @@
-import { Button, Theme, Typography } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import { auth, login } from "./firebase"
 import { useEffect, useState } from "react"
 import { User } from "firebase/auth"
-import { styled, useTheme } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 
-import "./App.css"
+import { SessionsList } from "./sessions/SessionsList"
 
 export const App = () => {
-  const theme = useTheme<Theme>()
-
   const [currentUser, setCurrentUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -34,7 +32,11 @@ export const App = () => {
   return (
     <StyledDiv>
       {currentUser ? (
-        <Typography color={theme.palette.common.white}>{currentUser.displayName}</Typography>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Button variant="contained" onClick={() => auth.signOut()}>Sign Out</Button>
+          <Typography>{currentUser.displayName}</Typography>
+          <SessionsList />
+        </div>
       ) : (
         <Button variant="contained" onClick={handleSignIn}>
           Sign In
@@ -48,6 +50,6 @@ const StyledDiv = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: theme.palette.background.default,
+  textAlign: "center",
   height: "100vh",
 }))
