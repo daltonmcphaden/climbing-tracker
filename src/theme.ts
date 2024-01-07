@@ -24,6 +24,15 @@ export const themeOptions: ThemeOptions = {
       main: "#1272e2",
     },
   },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          margin: "16px",
+        },
+      },
+    },
+  },
 }
 
 export const theme = createTheme(themeOptions)

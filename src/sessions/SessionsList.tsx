@@ -1,20 +1,21 @@
 import { Typography, CircularProgress, Button } from "@mui/material"
 import { useState, useEffect } from "react"
 import { Session } from "../models"
-import { getDocs, collection, query, where } from "firebase/firestore"
+import { getDocs, collection } from "firebase/firestore"
 import { db } from "../firebase"
 import { SessionItem } from "./SessionItem"
+import { NewSessionForm } from "./NewSessionForm"
 
-const getSessions = async (userId: string) => {
+const getSessions = async () => {
   const sessionsRef = collection(db, "sessions")
-  const q = query(sessionsRef, where("climberIds", "array-contains", userId))
 
   try {
-    const querySnapshot = await getDocs(q)
+    const querySnapshot = await getDocs(sessionsRef)
     const sessions: Session[] = []
     querySnapshot.forEach(doc => {
       sessions.push({ id: doc.id, ...doc.data() } as Session)
     })
+    sessions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     return sessions
   } catch (error) {
     console.error("Error getting documents: ", error)
@@ -25,13 +26,23 @@ const getSessions = async (userId: string) => {
 export const SessionsList = () => {
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(false)
+  const [isAddingSession, setIsAddingSession] = useState(false)
 
   const fetchSessions = async () => {
     setLoading(true)
-    const res = await getSessions("VWAdj6K5MdboViWJhD2X6VicIwl1")
+    const res = await getSessions()
     setSessions(res)
     console.log(res)
     setLoading(false)
+  }
+
+  const handleSuccessfulSave = () => {
+    setIsAddingSession(false)
+    fetchSessions()
+  }
+
+  const handleCancel = () => {
+    setIsAddingSession(false)
   }
 
   useEffect(() => {
@@ -42,7 +53,13 @@ export const SessionsList = () => {
     <div>
       <Typography variant="h4">Sessions</Typography>
       {loading ? <CircularProgress /> : sessions.map((session: Session) => <SessionItem key={session.id} session={session} />)}
-      <Button variant="outlined">Add Session</Button>
+      {isAddingSession ? (
+        <NewSessionForm onSave={handleSuccessfulSave} onCancel={handleCancel} />
+      ) : (
+        <Button variant="outlined" onClick={() => setIsAddingSession(true)}>
+          Add Session
+        </Button>
+      )}
     </div>
   )
 }

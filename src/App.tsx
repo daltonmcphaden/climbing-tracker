@@ -1,10 +1,13 @@
 import { Button, Typography } from "@mui/material"
-import { auth, login } from "./firebase"
+import { auth } from "./firebase"
 import { useEffect, useState } from "react"
 import { User } from "firebase/auth"
 import { styled } from "@mui/material/styles"
 
 import { SessionsList } from "./sessions/SessionsList"
+import LoginForm from "./LoginForm"
+import { RouterProvider, createBrowserRouter } from "react-router-dom"
+import { ClimbsList } from "./climbs/ClimbsList"
 
 export const App = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
@@ -24,23 +27,29 @@ export const App = () => {
     return () => unsubscribe()
   }, [])
 
-  const handleSignIn = async () => {
-    const res = await login()
-    setCurrentUser(res.user)
-  }
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <SessionsList />,
+    },
+    {
+      path: "/session/:sessionId",
+      element: <ClimbsList />,
+    },
+  ])
 
   return (
     <StyledDiv>
       {currentUser ? (
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <Button variant="contained" onClick={() => auth.signOut()}>Sign Out</Button>
+          <Button variant="contained" onClick={() => auth.signOut()}>
+            Sign Out
+          </Button>
           <Typography>{currentUser.displayName}</Typography>
-          <SessionsList />
+          <RouterProvider router={router} />
         </div>
       ) : (
-        <Button variant="contained" onClick={handleSignIn}>
-          Sign In
-        </Button>
+        <LoginForm />
       )}
     </StyledDiv>
   )
@@ -49,7 +58,7 @@ export const App = () => {
 const StyledDiv = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
-  alignItems: "center",
   textAlign: "center",
+  padding: theme.spacing(4),
   height: "100vh",
 }))

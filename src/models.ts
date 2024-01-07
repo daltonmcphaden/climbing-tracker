@@ -1,19 +1,19 @@
+export interface Climber {
+  id: string
+  name: string
+}
+
 export interface Session {
   id: string
   date: string
-  climberIds: string[]
+  climberNames: string[]
 }
 
 export interface Climb {
   id: string
-  climberId: string
-  name: string
+  sessionId: string
+  climberNames: string[]
   grade: string
-  attempts: number
-  notes: string
-}
-
-export interface Climber {
-  id: string
-  name: string
+  holdColor: string
+  climbType: "Lead" | "Toprope" | "Boulder"
 }
