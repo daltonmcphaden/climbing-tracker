@@ -53,21 +53,36 @@ export const SessionsList = () => {
     fetchSessions()
   }
 
+  if (loading) return <CircularProgress />
+
   return (
-    <div>
-      <Typography variant="h4">Sessions</Typography>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        sessions.map((session: Session) => <SessionItem key={session.id} session={session} onDelete={handleDelete} />)
-      )}
-      {isAddingSession ? (
-        <NewSessionForm onSave={handleSuccessfulSave} onCancel={handleCancel} />
-      ) : (
-        <Button variant="outlined" onClick={() => setIsAddingSession(true)}>
-          Add Session
-        </Button>
-      )}
+    <div
+      style={{
+        display: "grid",
+        flexDirection: "column",
+      }}
+    >
+      <Typography variant="h4" color="secondary" style={{ marginBottom: "12px" }}>
+        Your Sessions
+      </Typography>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        {sessions.map((session: Session) => (
+          <SessionItem key={session.id} session={session} onDelete={handleDelete} />
+        ))}
+        {isAddingSession ? (
+          <NewSessionForm onSave={handleSuccessfulSave} onCancel={handleCancel} />
+        ) : (
+          <Button variant="outlined" onClick={() => setIsAddingSession(true)}>
+            Add Session
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

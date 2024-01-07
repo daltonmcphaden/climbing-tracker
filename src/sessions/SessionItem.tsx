@@ -1,12 +1,13 @@
-import { Card, CardActionArea, IconButton, useTheme } from "@mui/material"
+import { Card, CardActionArea, IconButton, Typography, useTheme } from "@mui/material"
 import { Session } from "../models"
 import dayjs from "dayjs"
 import { useNavigate } from "react-router-dom"
 import DeleteIcon from "@mui/icons-material/Delete"
-import ConfirmationDialog from "../components/ConfirmationDialog"
+import { ConfirmationDialog } from "../components/ConfirmationDialog"
 import { useState } from "react"
 import { db } from "../firebase"
 import { deleteDoc, doc, collection, query, where, getDocs, deleteField } from "firebase/firestore"
+import PersonIcon from "@mui/icons-material/Person"
 
 const deleteSession = async (sessionId: string) => {
   console.log("Deleting session", sessionId)
@@ -54,22 +55,38 @@ export const SessionItem = (props: Props) => {
   }
 
   return (
-    <Card variant="outlined">
-      <CardActionArea onClick={handleClick} style={{ padding: theme.spacing(2) }}>
-        <div>
-          {formattedDate}
-          {props.session.climberNames?.map(name => <div key={name}>{name}</div>)}
-        </div>
-      </CardActionArea>
-      <IconButton
-        onClick={e => {
-          e.stopPropagation()
-          handleDelete()
-        }}
-      >
-        <DeleteIcon />
-      </IconButton>
+    <>
+      <Card variant="outlined">
+        <CardActionArea
+          onClick={handleClick}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: theme.spacing(2),
+          }}
+        >
+          <div>
+            <Typography sx={{ fontWeight: "bold", marginBottom: "8px" }}>{formattedDate}</Typography>
+            {props.session.climberNames?.map(name => (
+              <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <PersonIcon color={"action"} fontSize="small" />
+                <Typography variant="body1" key={name}>
+                  {name}
+                </Typography>
+              </div>
+            ))}
+          </div>
+          <IconButton
+            onClick={e => {
+              e.stopPropagation()
+              handleDelete()
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </CardActionArea>
+      </Card>
       <ConfirmationDialog open={open} handleClose={handleClose} dialogTitle={"Delete Session"} handleConfirm={handleConfirm} />
-    </Card>
+    </>
   )
 }

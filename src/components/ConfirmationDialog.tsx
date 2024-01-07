@@ -12,7 +12,7 @@ interface Props {
   handleConfirm: () => void
 }
 
-export default function ConfirmationDialog(props: Props) {
+export const ConfirmationDialog = (props: Props) => {
   const handleConfirm = () => {
     handleClose()
     props.handleConfirm()

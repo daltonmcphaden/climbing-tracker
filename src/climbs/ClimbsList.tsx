@@ -1,10 +1,12 @@
-import { Button, Card } from "@mui/material"
+import { Button, Card, Typography, styled } from "@mui/material"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore"
 import { db } from "../firebase"
-import { Climb } from "../models"
+import { Climb, Session } from "../models"
 import { NewClimbForm } from "./NewClimbForm"
+import dayjs from "dayjs"
+import PersonIcon from "@mui/icons-material/Person"
 
 const getClimbs = async (sessionId: string) => {
   const climbsRef = collection(db, "climbs")
@@ -22,9 +24,26 @@ const getClimbs = async (sessionId: string) => {
   }
 }
 
+const fetchSession = async (sessionId: string) => {
+  const sessionRef = doc(db, "sessions", sessionId)
+  try {
+    const docSnap = await getDoc(sessionRef)
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data())
+    } else {
+      console.log("No such document!")
+    }
+    return docSnap.data() as Session
+  } catch (error) {
+    console.error("Error getting documents: ", error)
+    return null
+  }
+}
+
 export const ClimbsList = () => {
   const navigate = useNavigate()
   const [climbs, setClimbs] = useState<Climb[]>([])
+  const [session, setSession] = useState<Session | null>(null)
   const [isAddingClimb, setIsAddingClimb] = useState(false)
   const handleBack = () => {
     navigate("/")
@@ -32,22 +51,24 @@ export const ClimbsList = () => {
 
   const { sessionId } = useParams()
 
-  const fetchClimbs = async () => {
+  const fetchData = async () => {
     if (!sessionId) {
       return
     }
+    const session = await fetchSession(sessionId)
+    setSession(session)
     const climbs = await getClimbs(sessionId)
     setClimbs(climbs)
   }
 
   useEffect(() => {
-    fetchClimbs()
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId])
 
   const handleSuccessfulSave = () => {
     setIsAddingClimb(false)
-    fetchClimbs()
+    fetchData()
   }
 
   const handleCancel = () => {
@@ -59,24 +80,73 @@ export const ClimbsList = () => {
       <Button variant="outlined" onClick={handleBack}>
         Back
       </Button>
-      <h1>Session: {sessionId}</h1>
-      {climbs.map(climb => (
-        <Card key={climb.id} variant="outlined" style={{ padding: "8px" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div>Grade: {climb.grade}</div>
-            <div>Hold color: {climb.holdColor}</div>
-            <div>Type: {climb.climbType}</div>
-            {climb.climberNames?.map(name => <div key={name}>{name}</div>)}
-          </div>
-        </Card>
-      ))}
-      {isAddingClimb ? (
-        <NewClimbForm sessionId={sessionId} onSave={handleSuccessfulSave} onCancel={handleCancel} />
-      ) : (
-        <Button variant="outlined" onClick={() => setIsAddingClimb(true)}>
-          Add Climb
-        </Button>
-      )}
+      <Typography variant="h4" color="secondary" style={{ marginTop: "16px" }}>
+        Climbs
+      </Typography>
+      <Typography sx={{ fontWeight: "bold", marginBottom: "16px" }}>{dayjs(session?.date).format("dddd, MMMM D, YYYY h:mm A")}</Typography>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        {climbs.map(climb => (
+          <Card
+            key={climb.id}
+            variant="outlined"
+            style={{
+              padding: "16px",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Grade:</Typography> {climb.grade}
+              </StyledLabelDiv>
+              <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Hold color:</Typography>
+                {climb.holdColor}
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: climb.holdColor,
+                  }}
+                ></span>
+              </StyledLabelDiv>
+              <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Type:</Typography> {climb.climbType}
+              </StyledLabelDiv>
+              <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Climbers:</Typography>{" "}
+                {climb.climberNames?.map(name => (
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                    <PersonIcon color={"action"} fontSize="inherit" />
+                    <Typography variant="body1" key={name}>
+                      {name}
+                    </Typography>
+                  </div>
+                ))}
+              </StyledLabelDiv>
+            </div>
+          </Card>
+        ))}
+        {isAddingClimb ? (
+          <NewClimbForm sessionId={sessionId} onSave={handleSuccessfulSave} onCancel={handleCancel} />
+        ) : (
+          <Button variant="outlined" onClick={() => setIsAddingClimb(true)}>
+            Add Climb
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
+
+const StyledLabelDiv = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "baseline",
+  gap: "4px",
+}))

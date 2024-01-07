@@ -1,16 +1,18 @@
-import { Button, Typography } from "@mui/material"
 import { auth } from "./firebase"
 import { useEffect, useState } from "react"
 import { User } from "firebase/auth"
-import { styled } from "@mui/material/styles"
 
 import { SessionsList } from "./sessions/SessionsList"
-import LoginForm from "./LoginForm"
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { ClimbsList } from "./climbs/ClimbsList"
+import { LoginForm } from "./components/LoginForm"
+import { AppMenuBar } from "./components/AppMenuBar"
+import { CircularProgress } from "@mui/material"
+import { theme } from "./theme"
 
 export const App = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -21,6 +23,7 @@ export const App = () => {
         // No user is signed in, set the user in state to null
         setCurrentUser(null)
       }
+      setIsLoading(false)
     })
 
     // Cleanup subscription on unmount
@@ -38,27 +41,20 @@ export const App = () => {
     },
   ])
 
+  if (isLoading) return <CircularProgress />
+
   return (
-    <StyledDiv>
+    <>
       {currentUser ? (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <Button variant="contained" onClick={() => auth.signOut()}>
-            Sign Out
-          </Button>
-          <Typography>{currentUser.displayName}</Typography>
-          <RouterProvider router={router} />
-        </div>
+        <>
+          <AppMenuBar />
+          <div style={{ padding: theme.spacing(3) }}>
+            <RouterProvider router={router} />
+          </div>
+        </>
       ) : (
         <LoginForm />
       )}
-    </StyledDiv>
+    </>
   )
 }
-
-const StyledDiv = styled("div")(({ theme }) => ({
-  display: "flex",
-  justifyContent: "center",
-  textAlign: "center",
-  padding: theme.spacing(4),
-  height: "100vh",
-}))
