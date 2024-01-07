@@ -13,7 +13,7 @@ const getClimbs = async (sessionId: string) => {
     const querySnapshot = await getDocs(q)
     const climbs: Climb[] = []
     querySnapshot.forEach(doc => {
-      climbs.push(doc.data() as Climb)
+      climbs.push({ id: doc.id, ...doc.data() } as Climb)
     })
     return climbs
   } catch (error) {

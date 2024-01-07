@@ -36,6 +36,10 @@ export const SessionsList = () => {
     setLoading(false)
   }
 
+  useEffect(() => {
+    fetchSessions()
+  }, [])
+
   const handleSuccessfulSave = () => {
     setIsAddingSession(false)
     fetchSessions()
@@ -45,14 +49,18 @@ export const SessionsList = () => {
     setIsAddingSession(false)
   }
 
-  useEffect(() => {
+  const handleDelete = () => {
     fetchSessions()
-  }, [])
+  }
 
   return (
     <div>
       <Typography variant="h4">Sessions</Typography>
-      {loading ? <CircularProgress /> : sessions.map((session: Session) => <SessionItem key={session.id} session={session} />)}
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        sessions.map((session: Session) => <SessionItem key={session.id} session={session} onDelete={handleDelete} />)
+      )}
       {isAddingSession ? (
         <NewSessionForm onSave={handleSuccessfulSave} onCancel={handleCancel} />
       ) : (

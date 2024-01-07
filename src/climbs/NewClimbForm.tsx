@@ -149,6 +149,7 @@ export const NewClimbForm = (props: Props) => {
           <MenuItem value={"5.11b"}>5.11b</MenuItem>
           <MenuItem value={"5.11c"}>5.11c</MenuItem>
           <MenuItem value={"5.11d"}>5.11d</MenuItem>
+          <MenuItem value={"5.12a"}>5.12a</MenuItem>
         </Select>
       </FormControl>
       <FormControl>
@@ -170,6 +171,7 @@ export const NewClimbForm = (props: Props) => {
         <Select value={climbType} onChange={handleClimbTypeChange} label="Climb Type">
           <MenuItem value={"Lead"}>Lead</MenuItem>
           <MenuItem value={"Toprope"}>Toprope</MenuItem>
+          <MenuItem value={"Autobelay"}>Autobelay</MenuItem>
           <MenuItem value={"Boulder"}>Boulder</MenuItem>
         </Select>
       </FormControl>
