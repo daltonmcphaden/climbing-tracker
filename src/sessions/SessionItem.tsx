@@ -56,19 +56,18 @@ export const SessionItem = (props: Props) => {
 
   return (
     <>
-      <Card variant="outlined">
-        <CardActionArea
-          onClick={handleClick}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: theme.spacing(2),
-          }}
-        >
+      <Card
+        variant="outlined"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <CardActionArea onClick={handleClick} style={{ padding: theme.spacing(2) }}>
           <div>
             <Typography sx={{ fontWeight: "bold", marginBottom: "8px" }}>{formattedDate}</Typography>
             {props.session.climberNames?.map(name => (
-              <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <div key={name} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                 <PersonIcon color={"action"} fontSize="small" />
                 <Typography variant="body1" key={name}>
                   {name}
@@ -76,6 +75,8 @@ export const SessionItem = (props: Props) => {
               </div>
             ))}
           </div>
+        </CardActionArea>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <IconButton
             onClick={e => {
               e.stopPropagation()
@@ -84,7 +85,7 @@ export const SessionItem = (props: Props) => {
           >
             <DeleteIcon />
           </IconButton>
-        </CardActionArea>
+        </div>
       </Card>
       <ConfirmationDialog open={open} handleClose={handleClose} dialogTitle={"Delete Session"} handleConfirm={handleConfirm} />
     </>

@@ -1,4 +1,4 @@
-import { Button, Card, Typography, styled } from "@mui/material"
+import { Button, Card, CircularProgress, Rating, Typography, styled } from "@mui/material"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore"
@@ -44,6 +44,8 @@ export const ClimbsList = () => {
   const navigate = useNavigate()
   const [climbs, setClimbs] = useState<Climb[]>([])
   const [session, setSession] = useState<Session | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  console.log(isLoading)
   const [isAddingClimb, setIsAddingClimb] = useState(false)
   const handleBack = () => {
     navigate("/")
@@ -59,6 +61,7 @@ export const ClimbsList = () => {
     setSession(session)
     const climbs = await getClimbs(sessionId)
     setClimbs(climbs)
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -74,6 +77,8 @@ export const ClimbsList = () => {
   const handleCancel = () => {
     setIsAddingClimb(false)
   }
+
+  if (isLoading) return <CircularProgress />
 
   return (
     <div>
@@ -120,9 +125,15 @@ export const ClimbsList = () => {
                 <Typography style={{ fontWeight: "bold" }}>Type:</Typography> {climb.climbType}
               </StyledLabelDiv>
               <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Perceived Difficulty:</Typography> {climb.perceivedDifficulty}
+              </StyledLabelDiv>
+              <StyledLabelDiv>
+                <Typography style={{ fontWeight: "bold" }}>Rating:</Typography> <Rating name="read-only" value={climb.rating} readOnly />
+              </StyledLabelDiv>
+              <StyledLabelDiv>
                 <Typography style={{ fontWeight: "bold" }}>Climbers:</Typography>{" "}
                 {climb.climberNames?.map(name => (
-                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                  <div key={name} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                     <PersonIcon color={"action"} fontSize="inherit" />
                     <Typography variant="body1" key={name}>
                       {name}
@@ -147,6 +158,6 @@ export const ClimbsList = () => {
 
 const StyledLabelDiv = styled("div")(({ theme }) => ({
   display: "flex",
-  alignItems: "baseline",
+  alignItems: "center",
   gap: "4px",
 }))

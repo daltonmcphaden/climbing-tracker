@@ -15,5 +15,7 @@ export interface Climb {
   climberNames: string[]
   grade: string
   holdColor: string
-  climbType: "Lead" | "Toprope" | "Boulder"
+  climbType: "Lead" | "Top Rope" | "Boulder" | "Auto Belay"
+  perceivedDifficulty: "easy" | "medium" | "hard" | "very hard"
+  rating: number
 }

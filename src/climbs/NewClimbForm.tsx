@@ -7,8 +7,10 @@ import {
   FormGroup,
   InputLabel,
   MenuItem,
+  Rating,
   Select,
   SelectChangeEvent,
+  Typography,
   useTheme,
 } from "@mui/material"
 import { useEffect, useState } from "react"
@@ -54,7 +56,8 @@ export const NewClimbForm = (props: Props) => {
   const [climbType, setClimbType] = useState<Climb["climbType"] | "">("")
   const [climberNames, setClimberNames] = useState<string[]>([])
   const [selectedClimbers, setSelectedClimbers] = useState<string[]>([])
-  console.log(selectedClimbers)
+  const [perceivedDifficulty, setPerceivedDifficulty] = useState<Climb["perceivedDifficulty"] | "">("")
+  const [rating, setRating] = useState<number | null>()
 
   const fetchClimberNames = async () => {
     if (!props.sessionId) {
@@ -101,12 +104,22 @@ export const NewClimbForm = (props: Props) => {
       console.log("No climb type selected")
       return
     }
+    if (!perceivedDifficulty) {
+      console.log("No perceived difficulty selected")
+      return
+    }
+    if (!rating) {
+      console.log("No rating selected")
+      return
+    }
     const newClimb: Omit<Climb, "id"> = {
       sessionId: props.sessionId,
       climberNames: selectedClimbers,
       grade,
       climbType,
       holdColor,
+      perceivedDifficulty,
+      rating,
     }
     try {
       const docRef = await saveClimb(newClimb)
@@ -133,8 +146,13 @@ export const NewClimbForm = (props: Props) => {
     setClimbType(event.target.value as Climb["climbType"])
   }
 
+  const handleDifficultyChange = (event: SelectChangeEvent<string>) => {
+    setPerceivedDifficulty(event.target.value as Climb["perceivedDifficulty"])
+  }
+
   return (
-    <Card variant="outlined" style={{ display: "flex", flexDirection: "column", gap: "8px", padding: theme.spacing(2) }}>
+    <Card variant="outlined" style={{ display: "flex", flexDirection: "column", gap: "16px", padding: theme.spacing(2) }}>
+      <Typography variant="h5">New Climb</Typography>
       <FormControl>
         <InputLabel>Grade</InputLabel>
         <Select value={grade} onChange={handleGradeChange} label="Grade">
@@ -170,11 +188,29 @@ export const NewClimbForm = (props: Props) => {
         <InputLabel>Climb Type</InputLabel>
         <Select value={climbType} onChange={handleClimbTypeChange} label="Climb Type">
           <MenuItem value={"Lead"}>Lead</MenuItem>
-          <MenuItem value={"Toprope"}>Toprope</MenuItem>
-          <MenuItem value={"Autobelay"}>Autobelay</MenuItem>
+          <MenuItem value={"Top Rope"}>Top Rope</MenuItem>
+          <MenuItem value={"Auto Belay"}>Auto Belay</MenuItem>
           <MenuItem value={"Boulder"}>Boulder</MenuItem>
         </Select>
       </FormControl>
+      <FormControl>
+        <InputLabel>Perceived Difficulty</InputLabel>
+        <Select value={perceivedDifficulty} onChange={handleDifficultyChange} label="Perceived Difficulty">
+          <MenuItem value={"Easy"}>Easy</MenuItem>
+          <MenuItem value={"Medium"}>Medium</MenuItem>
+          <MenuItem value={"Hard"}>Hard</MenuItem>
+          <MenuItem value={"Very Hard"}>Very Hard</MenuItem>
+        </Select>
+      </FormControl>
+      <div>
+        <Typography component="legend">Rating</Typography>
+        <Rating
+          value={rating || 0}
+          onChange={(event, newValue) => {
+            setRating(newValue)
+          }}
+        />
+      </div>
       <FormGroup>
         {climberNames.map(name => (
           <FormControlLabel
