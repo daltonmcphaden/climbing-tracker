@@ -6,7 +6,7 @@ import { db } from "../firebase"
 import { Climb, Session } from "../models"
 import { NewClimbForm } from "./NewClimbForm"
 import dayjs from "dayjs"
-import PersonIcon from "@mui/icons-material/Person"
+import { ClimbRowItem } from "./ClimbRowItem"
 
 const getClimbs = async (sessionId: string) => {
   const climbsRef = collection(db, "climbs")
@@ -97,52 +97,7 @@ export const ClimbsList = () => {
         }}
       >
         {climbs.map(climb => (
-          <Card
-            key={climb.id}
-            variant="outlined"
-            style={{
-              padding: "16px",
-            }}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Grade:</Typography> {climb.grade}
-              </StyledLabelDiv>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Hold color:</Typography>
-                {climb.holdColor}
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    backgroundColor: climb.holdColor,
-                  }}
-                ></span>
-              </StyledLabelDiv>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Type:</Typography> {climb.climbType}
-              </StyledLabelDiv>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Perceived Difficulty:</Typography> {climb.perceivedDifficulty}
-              </StyledLabelDiv>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Rating:</Typography> <Rating name="read-only" value={climb.rating} readOnly />
-              </StyledLabelDiv>
-              <StyledLabelDiv>
-                <Typography style={{ fontWeight: "bold" }}>Climbers:</Typography>{" "}
-                {climb.climberNames?.map(name => (
-                  <div key={name} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <PersonIcon color={"action"} fontSize="inherit" />
-                    <Typography variant="body1" key={name}>
-                      {name}
-                    </Typography>
-                  </div>
-                ))}
-              </StyledLabelDiv>
-            </div>
-          </Card>
+          <ClimbRowItem key={climb.id} climb={climb} />
         ))}
         {isAddingClimb ? (
           <NewClimbForm sessionId={sessionId} onSave={handleSuccessfulSave} onCancel={handleCancel} />
@@ -155,9 +110,3 @@ export const ClimbsList = () => {
     </div>
   )
 }
-
-const StyledLabelDiv = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: "4px",
-}))

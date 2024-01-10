@@ -14,9 +14,10 @@ import {
   useTheme,
 } from "@mui/material"
 import { useEffect, useState } from "react"
-import { Climb, Session } from "../models"
+import { Climb, PinCoordinate, Session } from "../models"
 import { addDoc, collection, doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase"
+import { GymMap } from "../components/GymMap"
 
 const getSession = async (sessionId: string) => {
   const sessionRef = doc(db, "sessions", sessionId)
@@ -57,6 +58,7 @@ export const NewClimbForm = (props: Props) => {
   const [climberNames, setClimberNames] = useState<string[]>([])
   const [selectedClimbers, setSelectedClimbers] = useState<string[]>([])
   const [perceivedDifficulty, setPerceivedDifficulty] = useState<Climb["perceivedDifficulty"] | "">("")
+  const [pinLocation, setPinLocation] = useState<PinCoordinate>()
   const [rating, setRating] = useState<number | null>()
 
   const fetchClimberNames = async () => {
@@ -112,6 +114,10 @@ export const NewClimbForm = (props: Props) => {
       console.log("No rating selected")
       return
     }
+    if (!pinLocation) {
+      console.log("No pin location selected")
+      return
+    }
     const newClimb: Omit<Climb, "id"> = {
       sessionId: props.sessionId,
       climberNames: selectedClimbers,
@@ -120,6 +126,7 @@ export const NewClimbForm = (props: Props) => {
       holdColor,
       perceivedDifficulty,
       rating,
+      pinLocation,
     }
     try {
       const docRef = await saveClimb(newClimb)
@@ -202,6 +209,8 @@ export const NewClimbForm = (props: Props) => {
           <MenuItem value={"Very Hard"}>Very Hard</MenuItem>
         </Select>
       </FormControl>
+      <Typography component="legend">Location</Typography>
+      <GymMap pinLocation={pinLocation} handleSetPinLocation={(location: PinCoordinate) => setPinLocation(location)} />
       <div>
         <Typography component="legend">Rating</Typography>
         <Rating

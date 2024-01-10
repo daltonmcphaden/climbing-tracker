@@ -18,4 +18,10 @@ export interface Climb {
   climbType: "Lead" | "Top Rope" | "Boulder" | "Auto Belay"
   perceivedDifficulty: "easy" | "medium" | "hard" | "very hard"
   rating: number
+  pinLocation: PinCoordinate
+}
+
+export interface PinCoordinate {
+  x: number
+  y: number
 }

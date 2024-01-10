@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, FormControlLabel, FormGroup, useTheme } from "@mui/material"
+import { Button, Card, Checkbox, FormControlLabel, FormGroup, Typography, useTheme } from "@mui/material"
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker"
 import { useEffect, useState } from "react"
 import { Session } from "../models"
@@ -87,6 +87,7 @@ export const NewSessionForm = (props: Props) => {
 
   return (
     <Card variant="outlined" style={{ display: "flex", flexDirection: "column", gap: "8px", padding: theme.spacing(2) }}>
+      <Typography variant="h5">New Session</Typography>
       <DateTimePicker value={dateValue} onChange={newValue => setDateValue(newValue)} />
       <FormGroup>
         {climberNames.map(name => (
