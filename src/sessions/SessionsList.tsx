@@ -78,7 +78,7 @@ export const SessionsList = () => {
         {isAddingSession ? (
           <NewSessionForm onSave={handleSuccessfulSave} onCancel={handleCancel} />
         ) : (
-          <Button variant="outlined" onClick={() => setIsAddingSession(true)}>
+          <Button variant="contained" onClick={() => setIsAddingSession(true)}>
             Add Session
           </Button>
         )}

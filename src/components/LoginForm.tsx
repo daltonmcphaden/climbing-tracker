@@ -55,8 +55,8 @@ const StyledDiv = styled("div")(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   textAlign: "center",
+  height: "80vh",
   padding: theme.spacing(4),
-  marginTop: "20%",
 }))
 
 const Header = styled("h1")(({ theme }) => ({

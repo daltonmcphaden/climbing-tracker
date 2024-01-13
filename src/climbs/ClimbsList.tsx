@@ -82,7 +82,7 @@ export const ClimbsList = () => {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleBack}>
+      <Button variant="contained" color="secondary" onClick={handleBack}>
         Back
       </Button>
       <Typography variant="h4" color="secondary" style={{ marginTop: "16px" }}>
@@ -102,7 +102,7 @@ export const ClimbsList = () => {
         {isAddingClimb ? (
           <NewClimbForm sessionId={sessionId} onSave={handleSuccessfulSave} onCancel={handleCancel} />
         ) : (
-          <Button variant="outlined" onClick={() => setIsAddingClimb(true)}>
+          <Button variant="contained" onClick={() => setIsAddingClimb(true)}>
             Add Climb
           </Button>
         )}

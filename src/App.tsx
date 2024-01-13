@@ -44,7 +44,11 @@ export const App = () => {
   if (isLoading) return <CircularProgress />
 
   return (
-    <>
+    <div
+      style={{
+        height: "100vh",
+      }}
+    >
       {currentUser ? (
         <>
           <AppMenuBar />
@@ -55,6 +59,19 @@ export const App = () => {
       ) : (
         <LoginForm />
       )}
-    </>
+      <img
+        src="/images/topo.jpg"
+        alt="topo"
+        style={{
+          position: "fixed",
+          zIndex: -1,
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          opacity: 0.25,
+        }}
+      />
+    </div>
   )
 }
